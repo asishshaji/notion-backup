@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
 	"sync"
 
 	"github.com/asishshaji/notion-backup/app"
@@ -15,16 +14,14 @@ import (
 func main() {
 	godotenv.Load()
 
+	httpClient := app.NewHttpClient()
+
 	// create new app
-	app := app.NewApp(app.NotionTokens{
-		TOKEN:      os.Getenv("NOTION_TOKEN"),
-		FILE_TOKEN: os.Getenv("NOTION_FILE_TOKEN"),
-		SPACE_ID:   os.Getenv("NOTION_SPACE_ID"),
-	}, app.NewHttpClient())
+	app := app.NewApp(httpClient)
 
 	// register all the processors
-	app.RegisterProcessor(models.HtmlExportType, processors.NewHTMLProcessor())
-	app.RegisterProcessor(models.MardownExportType, processors.NewMDProcessor())
+	app.RegisterProcessor(models.HtmlExportType, processors.NewHTMLProcessor(httpClient))
+	app.RegisterProcessor(models.MardownExportType, processors.NewMDProcessor(httpClient))
 
 	flagMap := make(map[*bool]models.ExportType)
 
@@ -40,7 +37,7 @@ func main() {
 	for flagPtr, procType := range flagMap {
 		if *flagPtr {
 			wg.Add(1)
-			go app.ProcessJob(procType, wg)
+			go app.StartProcess(procType, wg)
 		}
 	}
 

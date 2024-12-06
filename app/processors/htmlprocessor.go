@@ -1,11 +1,18 @@
 package processors
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
 
-type HTMLProcessor struct{}
+type HTMLProcessor struct {
+	httpClient *http.Client
+}
 
-func NewHTMLProcessor() Processor {
-	return &HTMLProcessor{}
+func NewHTMLProcessor(client *http.Client) Processor {
+	return &HTMLProcessor{
+		httpClient: client,
+	}
 }
 
 func (hP *HTMLProcessor) Process() error {

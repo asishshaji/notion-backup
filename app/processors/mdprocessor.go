@@ -1,14 +1,43 @@
 package processors
 
-import "fmt"
+import (
+	"net/http"
 
-type MDProcessor struct{}
+	"github.com/asishshaji/notion-backup/app/actions"
+	"github.com/asishshaji/notion-backup/models"
+)
 
-func NewMDProcessor() Processor {
-	return &MDProcessor{}
+type MDProcessor struct {
+	httpClient *http.Client
+}
+
+type MDSharedData struct{}
+
+func NewMDProcessor(client *http.Client) Processor {
+	return &MDProcessor{
+		httpClient: client,
+	}
+}
+
+func (md *MDProcessor) Actions() []actions.Action {
+	return []actions.Action{&actions.EnqueueAction{
+		HttpClient: md.httpClient,
+	}}
 }
 
 func (md *MDProcessor) Process() error {
-	fmt.Println("MD Processing")
-	return nil
+	var err error
+
+	s := new(actions.SharedData)
+	s.ExportType = models.MardownExportType
+
+	// loop over actions and call act
+	for _, action := range md.Actions() {
+		err = action.Act(s)
+		if err != nil {
+			break
+		}
+	}
+
+	return err
 }
