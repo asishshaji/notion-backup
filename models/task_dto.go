@@ -15,10 +15,10 @@ type Task struct {
 	Request   TaskRequest `json:"request"`
 }
 
-type TaskRequestDTO struct {
+type CreateTaskDTO struct {
 	T Task `json:"task"`
 }
 
-type TaskResponseDTO struct {
+type CreateTaskResponseDTO struct {
 	TaskId string `json:"taskId"`
 }

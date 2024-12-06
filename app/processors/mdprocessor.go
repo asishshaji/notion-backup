@@ -20,9 +20,10 @@ func NewMDProcessor(client *http.Client) Processor {
 }
 
 func (md *MDProcessor) Actions() []actions.Action {
-	return []actions.Action{&actions.EnqueueAction{
-		HttpClient: md.httpClient,
-	}}
+	return []actions.Action{
+		&actions.EnqueueAction{HttpClient: md.httpClient},
+		&actions.StatusCheckerAction{HttpClient: md.httpClient},
+	}
 }
 
 func (md *MDProcessor) Process() error {

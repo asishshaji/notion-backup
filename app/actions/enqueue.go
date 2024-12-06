@@ -16,7 +16,7 @@ type EnqueueAction struct {
 }
 
 func (enqueueAction EnqueueAction) Act(s *SharedData) error {
-	taskRequest := models.TaskRequestDTO{
+	taskRequest := models.CreateTaskDTO{
 		T: models.Task{
 			EventName: "exportSpace",
 			Request: models.TaskRequest{
@@ -40,7 +40,7 @@ func (enqueueAction EnqueueAction) Act(s *SharedData) error {
 	if err != nil {
 		return err
 	}
-	var taskResp models.TaskResponseDTO
+	var taskResp models.CreateTaskResponseDTO
 
 	if err = json.Unmarshal(resp, &taskResp); err != nil {
 		return err
