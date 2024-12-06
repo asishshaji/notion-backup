@@ -28,7 +28,10 @@ func (sca StatusCheckerAction) Act(s *SharedData) error {
 				return err
 			}
 			if status == "success" {
+				// your workspace is now available to download, 
+				// move to the next action
 				s.ExportURL = exportURL
+				return nil
 			} else if status == "in_progress" {
 				fmt.Printf("%s polled, status %s\n", s.TaskId, status)
 			}
