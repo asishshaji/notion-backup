@@ -1,19 +1,18 @@
 package processors
 
 import (
-	"net/http"
-
 	"github.com/asishshaji/notion-backup/app/actions"
+	"github.com/asishshaji/notion-backup/app/httpclient"
 	"github.com/asishshaji/notion-backup/models"
 )
 
 type MDProcessor struct {
-	httpClient *http.Client
+	httpClient *httpclient.HTTPClient
 }
 
 type MDSharedData struct{}
 
-func NewMDProcessor(client *http.Client) Processor {
+func NewMDProcessor(client *httpclient.HTTPClient) Processor {
 	return &MDProcessor{
 		httpClient: client,
 	}

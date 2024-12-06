@@ -2,14 +2,15 @@ package processors
 
 import (
 	"fmt"
-	"net/http"
+
+	"github.com/asishshaji/notion-backup/app/httpclient"
 )
 
 type HTMLProcessor struct {
-	httpClient *http.Client
+	httpClient *httpclient.HTTPClient
 }
 
-func NewHTMLProcessor(client *http.Client) Processor {
+func NewHTMLProcessor(client *httpclient.HTTPClient) Processor {
 	return &HTMLProcessor{
 		httpClient: client,
 	}

@@ -2,23 +2,19 @@ package app
 
 import (
 	"fmt"
-	"net/http"
 	"sync"
 
+	"github.com/asishshaji/notion-backup/app/httpclient"
 	"github.com/asishshaji/notion-backup/app/processors"
 	"github.com/asishshaji/notion-backup/models"
 )
 
-func NewHttpClient() *http.Client {
-	return &http.Client{Transport: &http.Transport{MaxIdleConns: 10, DisableCompression: true}}
-}
-
 type App struct {
-	Client     *http.Client
+	Client     *httpclient.HTTPClient
 	Processors map[models.ExportType]processors.Processor
 }
 
-func NewApp(httpClient *http.Client) *App {
+func NewApp(httpClient *httpclient.HTTPClient) *App {
 	return &App{
 		Client:     httpClient,
 		Processors: make(map[models.ExportType]processors.Processor),

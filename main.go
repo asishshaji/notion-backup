@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/asishshaji/notion-backup/app"
+	"github.com/asishshaji/notion-backup/app/httpclient"
 	"github.com/asishshaji/notion-backup/app/processors"
 	"github.com/asishshaji/notion-backup/models"
 	"github.com/joho/godotenv"
@@ -14,7 +15,7 @@ import (
 func main() {
 	godotenv.Load()
 
-	httpClient := app.NewHttpClient()
+	httpClient := httpclient.NewHTTPClient()
 
 	// create new app
 	app := app.NewApp(httpClient)

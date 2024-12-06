@@ -1,19 +1,16 @@
 package actions
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
-	"os"
 	"time"
 
+	"github.com/asishshaji/notion-backup/app/httpclient"
 	"github.com/asishshaji/notion-backup/models"
 )
 
 type StatusCheckerAction struct {
-	HttpClient *http.Client
+	HttpClient *httpclient.HTTPClient
 }
 
 func (sca StatusCheckerAction) Act(s *SharedData) error {
@@ -28,7 +25,7 @@ func (sca StatusCheckerAction) Act(s *SharedData) error {
 				return err
 			}
 			if status == "success" {
-				// your workspace is now available to download, 
+				// your workspace is now available to download,
 				// move to the next action
 				s.ExportURL = exportURL
 				return nil
@@ -56,7 +53,7 @@ func (sca StatusCheckerAction) getTaskStatus(taskId string) (string, string, err
 		return status, exportURL, err
 	}
 
-	resp, err := sca.post(b)
+	resp, err := sca.HttpClient.Post(models.NOTION_API_GET_TASKS_URL, b)
 	if err != nil {
 		return status, exportURL, err
 	}
@@ -71,35 +68,4 @@ func (sca StatusCheckerAction) getTaskStatus(taskId string) (string, string, err
 	exportURL = result.Status.ExportURL
 
 	return status, exportURL, nil
-}
-
-// TODO use a custom http client and move these to that
-func (sca StatusCheckerAction) post(body []byte) ([]byte, error) {
-	req, err := http.NewRequest("POST", models.NOTION_API_ENQUEUE_URL, bytes.NewReader(body))
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("content-type", "application/json")
-	req.AddCookie(&http.Cookie{
-		Name:  "token_v2",
-		Value: os.Getenv("NOTION_TOKEN"),
-	})
-	req.AddCookie(&http.Cookie{
-		Name:  "file_token",
-		Value: os.Getenv("NOTION_FILE_TOKEN"),
-	})
-
-	res, err := sca.HttpClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer res.Body.Close()
-
-	respBody, err := io.ReadAll(res.Body)
-	if err != nil {
-		return nil, fmt.Errorf("error parsing enqueued task id : %s", err)
-	}
-
-	return respBody, nil
 }
