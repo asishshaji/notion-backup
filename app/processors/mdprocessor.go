@@ -8,6 +8,7 @@ import (
 
 type MDProcessor struct {
 	httpClient *httpclient.HTTPClient
+	actions    []actions.Action
 }
 
 type MDSharedData struct{}
@@ -18,13 +19,17 @@ func NewMDProcessor(client *httpclient.HTTPClient) Processor {
 	}
 }
 
-func (md *MDProcessor) Actions() []actions.Action {
-	return []actions.Action{
+func (md *MDProcessor) SetActions() {
+	md.actions = []actions.Action{
 		&actions.EnqueueAction{HttpClient: md.httpClient},
 		&actions.StatusCheckerAction{HttpClient: md.httpClient},
 		&actions.DownloaderAction{HttpClient: md.httpClient},
 		&actions.ExtractorAction{},
 	}
+}
+
+func (md *MDProcessor) Actions() []actions.Action {
+	return md.actions
 }
 
 func (md *MDProcessor) Process() error {
