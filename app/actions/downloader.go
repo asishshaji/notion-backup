@@ -37,7 +37,7 @@ func (dA DownloaderAction) Act(s *SharedData) error {
 	}
 
 	s.DownloadedFilePath = fileName
-	fmt.Printf("downloaded %s to %s", s.ExportType, fileName)
+	fmt.Printf("downloaded %s to %s\n", s.ExportType, fileName)
 
 	return nil
 }

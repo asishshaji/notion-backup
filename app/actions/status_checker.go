@@ -20,7 +20,7 @@ func (StatusCheckerAction) String() string {
 
 func (sca StatusCheckerAction) Act(s *SharedData) error {
 	// poll the status of the task
-	ticker := time.NewTicker(time.Second * 45) // TODO make it configurable
+	ticker := time.NewTicker(time.Second * 15) // TODO make it configurable
 	var pollCounter int
 	for {
 		select {

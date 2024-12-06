@@ -56,11 +56,11 @@ func (hC *HTTPClient) Get(url string) ([]byte, error) {
 	req.Header.Add("content-type", "application/json")
 	req.AddCookie(&http.Cookie{
 		Name:  "token_v2",
-		Value: hC.NOTION_TOKEN,
+		Value: os.Getenv("NOTION_TOKEN"),
 	})
 	req.AddCookie(&http.Cookie{
 		Name:  "file_token",
-		Value: hC.NOTION_FILE_TOKEN,
+		Value: os.Getenv("NOTION_FILE_TOKEN"),
 	})
 
 	res, err := hC.HttpClient.Do(req)
