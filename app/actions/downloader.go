@@ -13,6 +13,10 @@ type DownloaderAction struct {
 	HttpClient *httpclient.HTTPClient
 }
 
+func (DownloaderAction) String() string {
+	return "DownloaderAction"
+}
+
 func (dA DownloaderAction) Act(s *SharedData) error {
 	fmt.Printf("downloading from %s -> export type: %s", s.ExportURL, s.ExportType)
 	resp, err := dA.HttpClient.Get(s.ExportURL)

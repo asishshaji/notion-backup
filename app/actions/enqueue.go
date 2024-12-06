@@ -2,6 +2,7 @@ package actions
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/asishshaji/notion-backup/app/httpclient"
 	"github.com/asishshaji/notion-backup/constants"
@@ -10,6 +11,10 @@ import (
 
 type EnqueueAction struct {
 	HttpClient *httpclient.HTTPClient
+}
+
+func (EnqueueAction) String() string {
+	return "EnqueueAction"
 }
 
 func (enqueueAction EnqueueAction) Act(s *SharedData) error {
@@ -41,6 +46,10 @@ func (enqueueAction EnqueueAction) Act(s *SharedData) error {
 
 	if err = json.Unmarshal(resp, &taskResp); err != nil {
 		return err
+	}
+
+	if s.TaskId == "" {
+		return fmt.Errorf("no task found, enqueue failed")
 	}
 
 	// save the taskId to shared data

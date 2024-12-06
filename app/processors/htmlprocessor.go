@@ -1,6 +1,8 @@
 package processors
 
 import (
+	"fmt"
+
 	"github.com/asishshaji/notion-backup/app/actions"
 	"github.com/asishshaji/notion-backup/app/httpclient"
 	"github.com/asishshaji/notion-backup/constants"
@@ -17,7 +19,7 @@ func NewHTMLProcessor(client *httpclient.HTTPClient) Processor {
 	}
 }
 
-func (md *HTMLProcessor) SetActions() {
+func (md *HTMLProcessor) initialiseActions() {
 	md.actions = []actions.Action{
 		&actions.EnqueueAction{HttpClient: md.httpClient},
 		&actions.StatusCheckerAction{HttpClient: md.httpClient},
@@ -32,12 +34,14 @@ func (md *HTMLProcessor) Actions() []actions.Action {
 
 func (hP *HTMLProcessor) Process() error {
 	var err error
+	hP.initialiseActions()
 
 	s := new(actions.SharedData)
 	s.ExportType = constants.HtmlExportType
 
 	// loop over actions and call act
-	for _, action := range hP.Actions() {
+	for i, action := range hP.Actions() {
+		fmt.Printf("Executing action:%d %s\n", i+1, action)
 		err = action.Act(s)
 		if err != nil {
 			break

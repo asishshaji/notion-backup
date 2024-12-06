@@ -11,4 +11,5 @@ type SharedData struct {
 
 type Action interface {
 	Act(*SharedData) error
+	String() string
 }

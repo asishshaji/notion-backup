@@ -14,6 +14,10 @@ type StatusCheckerAction struct {
 	HttpClient *httpclient.HTTPClient
 }
 
+func (StatusCheckerAction) String() string {
+	return "StatusCheckerAction"
+}
+
 func (sca StatusCheckerAction) Act(s *SharedData) error {
 	// poll the status of the task
 	ticker := time.NewTicker(time.Second * 5) // TODO make it configurable
@@ -63,7 +67,10 @@ func (sca StatusCheckerAction) getTaskStatus(taskId string) (string, string, err
 		return status, exportURL, err
 	}
 
-	// TODO add error checking
+	if len(getTasksDTO.Results) == 0 {
+		return status, exportURL, fmt.Errorf("results should be atleast one")
+	}
+
 	result := getTasksDTO.Results[0]
 	status = result.State
 	exportURL = result.Status.ExportURL

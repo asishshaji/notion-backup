@@ -11,6 +11,10 @@ import (
 
 type ExtractorAction struct{}
 
+func (ExtractorAction) String() string {
+	return "ExtractorAction"
+}
+
 func (eA ExtractorAction) Act(s *SharedData) error {
 	outerZipFile, err := zip.OpenReader(s.DownloadedFilePath)
 	if err != nil {
