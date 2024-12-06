@@ -48,7 +48,7 @@ func (enqueueAction EnqueueAction) Act(s *SharedData) error {
 		return err
 	}
 
-	if s.TaskId == "" {
+	if taskResp.TaskId == "" {
 		return fmt.Errorf("no task found, enqueue failed")
 	}
 

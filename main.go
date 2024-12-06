@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	godotenv.Load()
+	godotenv.Load(".env")
 
 	httpClient := httpclient.NewHTTPClient()
 

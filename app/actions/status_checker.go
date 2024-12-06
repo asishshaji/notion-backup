@@ -20,11 +20,13 @@ func (StatusCheckerAction) String() string {
 
 func (sca StatusCheckerAction) Act(s *SharedData) error {
 	// poll the status of the task
-	ticker := time.NewTicker(time.Second * 5) // TODO make it configurable
-
+	ticker := time.NewTicker(time.Second * 45) // TODO make it configurable
+	var pollCounter int
 	for {
 		select {
 		case <-ticker.C:
+			pollCounter += 1
+			fmt.Printf("[%d] polling %s\n", pollCounter, s.TaskId)
 			status, exportURL, err := sca.getTaskStatus(s.TaskId)
 			if err != nil {
 				return err
@@ -36,6 +38,7 @@ func (sca StatusCheckerAction) Act(s *SharedData) error {
 				return nil
 			} else if status == "in_progress" {
 				fmt.Printf("%s polled, status %s\n", s.TaskId, status)
+				break
 			}
 		case <-time.After(time.Second * 60):
 			// something went wrong their side.
