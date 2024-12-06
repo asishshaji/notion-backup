@@ -22,6 +22,7 @@ func (md *MDProcessor) Actions() []actions.Action {
 	return []actions.Action{
 		&actions.EnqueueAction{HttpClient: md.httpClient},
 		&actions.StatusCheckerAction{HttpClient: md.httpClient},
+		&actions.DownloaderAction{HttpClient: md.httpClient},
 	}
 }
 

@@ -28,7 +28,7 @@ func (app *App) StartProcess(exportType models.ExportType, wg *sync.WaitGroup) {
 
 	// call the process function for the processor
 	if err := proc.Process(); err != nil {
-		fmt.Printf("error processing for %s: %s", exportType, err)
+		fmt.Printf("error processing for %s: %s\n", exportType, err)
 		return
 	}
 }
