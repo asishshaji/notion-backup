@@ -39,6 +39,8 @@ func (sca StatusCheckerAction) Act(s *SharedData) error {
 			} else if status == "in_progress" {
 				fmt.Printf("%s polled, status %s\n", s.TaskId, status)
 				break
+			} else {
+				return fmt.Errorf("invalid status for task :%s", s.TaskId)
 			}
 		case <-time.After(time.Second * 60):
 			// something went wrong their side.
