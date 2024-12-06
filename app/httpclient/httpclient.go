@@ -6,8 +6,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-
-	"github.com/asishshaji/notion-backup/models"
 )
 
 type HTTPClient struct {
@@ -24,7 +22,7 @@ func NewHTTPClient() *HTTPClient {
 }
 
 func (hC *HTTPClient) Post(url string, body []byte) ([]byte, error) {
-	req, err := http.NewRequest("POST", models.NOTION_API_ENQUEUE_URL, bytes.NewReader(body))
+	req, err := http.NewRequest("POST", url, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}

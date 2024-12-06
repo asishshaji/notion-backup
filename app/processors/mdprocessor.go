@@ -3,7 +3,7 @@ package processors
 import (
 	"github.com/asishshaji/notion-backup/app/actions"
 	"github.com/asishshaji/notion-backup/app/httpclient"
-	"github.com/asishshaji/notion-backup/models"
+	"github.com/asishshaji/notion-backup/constants"
 )
 
 type MDProcessor struct {
@@ -36,7 +36,7 @@ func (md *MDProcessor) Process() error {
 	var err error
 
 	s := new(actions.SharedData)
-	s.ExportType = models.MardownExportType
+	s.ExportType = constants.MardownExportType
 
 	// loop over actions and call act
 	for _, action := range md.Actions() {

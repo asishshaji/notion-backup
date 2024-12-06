@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/asishshaji/notion-backup/app/httpclient"
+	"github.com/asishshaji/notion-backup/constants"
 	"github.com/asishshaji/notion-backup/models"
 )
 
@@ -32,7 +33,7 @@ func (enqueueAction EnqueueAction) Act(s *SharedData) error {
 		return err
 	}
 
-	resp, err := enqueueAction.HttpClient.Post(models.NOTION_API_ENQUEUE_URL, marshalledTaskRequest)
+	resp, err := enqueueAction.HttpClient.Post(constants.NOTION_API_ENQUEUE_URL, marshalledTaskRequest)
 	if err != nil {
 		return err
 	}

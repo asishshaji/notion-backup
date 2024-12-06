@@ -8,6 +8,7 @@ import (
 	"github.com/asishshaji/notion-backup/app"
 	"github.com/asishshaji/notion-backup/app/httpclient"
 	"github.com/asishshaji/notion-backup/app/processors"
+	"github.com/asishshaji/notion-backup/constants"
 	"github.com/asishshaji/notion-backup/models"
 	"github.com/joho/godotenv"
 )
@@ -21,8 +22,8 @@ func main() {
 	app := app.NewApp(httpClient)
 
 	// register all the processors
-	app.RegisterProcessor(models.HtmlExportType, processors.NewHTMLProcessor(httpClient))
-	app.RegisterProcessor(models.MardownExportType, processors.NewMDProcessor(httpClient))
+	app.RegisterProcessor(constants.HtmlExportType, processors.NewHTMLProcessor(httpClient))
+	app.RegisterProcessor(constants.MardownExportType, processors.NewMDProcessor(httpClient))
 
 	flagMap := make(map[*bool]models.ExportType)
 

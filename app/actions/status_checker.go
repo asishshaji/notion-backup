@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/asishshaji/notion-backup/app/httpclient"
+	"github.com/asishshaji/notion-backup/constants"
 	"github.com/asishshaji/notion-backup/models"
 )
 
@@ -53,7 +54,7 @@ func (sca StatusCheckerAction) getTaskStatus(taskId string) (string, string, err
 		return status, exportURL, err
 	}
 
-	resp, err := sca.HttpClient.Post(models.NOTION_API_GET_TASKS_URL, b)
+	resp, err := sca.HttpClient.Post(constants.NOTION_API_GET_TASKS_URL, b)
 	if err != nil {
 		return status, exportURL, err
 	}

@@ -3,7 +3,7 @@ package processors
 import (
 	"github.com/asishshaji/notion-backup/app/actions"
 	"github.com/asishshaji/notion-backup/app/httpclient"
-	"github.com/asishshaji/notion-backup/models"
+	"github.com/asishshaji/notion-backup/constants"
 )
 
 type HTMLProcessor struct {
@@ -34,7 +34,7 @@ func (hP *HTMLProcessor) Process() error {
 	var err error
 
 	s := new(actions.SharedData)
-	s.ExportType = models.HtmlExportType
+	s.ExportType = constants.HtmlExportType
 
 	// loop over actions and call act
 	for _, action := range hP.Actions() {
