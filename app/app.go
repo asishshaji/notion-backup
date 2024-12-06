@@ -34,5 +34,6 @@ func (app *App) StartProcess(exportType models.ExportType, wg *sync.WaitGroup) {
 }
 
 func (app *App) RegisterProcessor(exportType models.ExportType, processor processors.Processor) {
+	// register the process for the exportType
 	app.Processors[exportType] = processor
 }

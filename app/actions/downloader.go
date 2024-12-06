@@ -17,13 +17,17 @@ func (DownloaderAction) String() string {
 	return "DownloaderAction"
 }
 
+// called after checking the status of the task enqueued to notion
+// downloads the zip to tmp directory and extracts it to current directory
 func (dA DownloaderAction) Act(s *SharedData) error {
 	fmt.Printf("downloading from %s -> export type: %s", s.ExportURL, s.ExportType)
+	// download the zip
 	resp, err := dA.HttpClient.Get(s.ExportURL)
 	if err != nil {
 		return err
 	}
 
+	// create the zip file
 	fileName := fmt.Sprintf("/tmp/%s.zip", s.ExportType)
 	outFile, err := os.Create(fileName)
 	if err != nil {
@@ -31,11 +35,13 @@ func (dA DownloaderAction) Act(s *SharedData) error {
 	}
 
 	defer outFile.Close()
+	// copy contents to zip file from the response
 	_, err = io.Copy(outFile, bytes.NewReader(resp))
 	if err != nil {
 		return err
 	}
 
+	// set the downloaded file path for the next actions to use
 	s.DownloadedFilePath = fileName
 	fmt.Printf("downloaded %s to %s\n", s.ExportType, fileName)
 

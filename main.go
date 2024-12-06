@@ -14,8 +14,12 @@ import (
 )
 
 func main() {
+	// load all environments
+	// will return an error if the provided fle does not exists
 	godotenv.Load(".env")
 
+	// create a new http client that can send send Get and Post methods using the
+	// notion tokens
 	httpClient := httpclient.NewHTTPClient()
 
 	// create new app
@@ -36,9 +40,11 @@ func main() {
 	flag.Parse()
 
 	wg := new(sync.WaitGroup)
+
 	for flagPtr, procType := range flagMap {
 		if *flagPtr {
 			wg.Add(1)
+			// start running the process
 			go app.StartProcess(procType, wg)
 		}
 	}

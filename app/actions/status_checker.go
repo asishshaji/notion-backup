@@ -18,6 +18,9 @@ func (StatusCheckerAction) String() string {
 	return "StatusCheckerAction"
 }
 
+// Aftering enqueueing the task, the function should be triggered to check if zip
+// is available for download. Function keeps polling notion api to check if the zip is ready.
+// This action sets the downloadUrl in sharedData for the DownloadAction to use
 func (sca StatusCheckerAction) Act(s *SharedData) error {
 	// poll the status of the task
 	ticker := time.NewTicker(time.Second * 20) // TODO make it configurable

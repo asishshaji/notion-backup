@@ -20,6 +20,7 @@ func NewHTMLProcessor(client *httpclient.HTTPClient) Processor {
 }
 
 func (md *HTMLProcessor) initialiseActions() {
+	// define the sequence of actions the process should follow
 	md.actions = []actions.Action{
 		&actions.EnqueueAction{HttpClient: md.httpClient},
 		&actions.StatusCheckerAction{HttpClient: md.httpClient},

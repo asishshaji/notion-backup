@@ -12,13 +12,16 @@ import (
 
 type EnqueueAction struct {
 	HttpClient      *httpclient.HTTPClient
-	NOTION_SPACE_ID string
+	NOTION_SPACE_ID string // the workspace to download
 }
 
 func (EnqueueAction) String() string {
 	return "EnqueueAction"
 }
 
+// the first action to get triggered
+// adds a task to download the workspace
+// sets the task id for the job in the shared data
 func (enqueueAction EnqueueAction) Act(s *SharedData) error {
 	taskRequest := models.CreateTaskDTO{
 		T: models.Task{

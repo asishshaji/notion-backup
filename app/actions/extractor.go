@@ -15,6 +15,8 @@ func (ExtractorAction) String() string {
 	return "ExtractorAction"
 }
 
+// used to extract the downloaded zip
+// the download path is available from the DownloaderAction
 func (eA ExtractorAction) Act(s *SharedData) error {
 	outerZipFile, err := zip.OpenReader(s.DownloadedFilePath)
 	if err != nil {
