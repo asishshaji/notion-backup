@@ -52,3 +52,29 @@ func (hC *HTTPClient) Post(url string, body []byte) ([]byte, error) {
 
 	return respBody, nil
 }
+
+func (hC *HTTPClient) Get(url string) ([]byte, error) {
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Add("content-type", "application/json")
+	req.AddCookie(&http.Cookie{
+		Name:  "token_v2",
+		Value: hC.NOTION_TOKEN,
+	})
+	req.AddCookie(&http.Cookie{
+		Name:  "file_token",
+		Value: hC.NOTION_FILE_TOKEN,
+	})
+
+	res, err := hC.HttpClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	respBody, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing enqueued task id : %s", err)
+	}
+
+	return respBody, nil
+}
