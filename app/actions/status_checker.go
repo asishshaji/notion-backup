@@ -20,7 +20,7 @@ func (StatusCheckerAction) String() string {
 
 func (sca StatusCheckerAction) Act(s *SharedData) error {
 	// poll the status of the task
-	ticker := time.NewTicker(time.Second * 15) // TODO make it configurable
+	ticker := time.NewTicker(time.Second * 20) // TODO make it configurable
 	var pollCounter int
 	for {
 		select {
@@ -42,7 +42,7 @@ func (sca StatusCheckerAction) Act(s *SharedData) error {
 			} else {
 				return fmt.Errorf("invalid status for task :%s", s.TaskId)
 			}
-		case <-time.After(time.Second * 60):
+		case <-time.After(time.Second * 120):
 			// something went wrong their side.
 			return fmt.Errorf("timed out for task :%s", s.TaskId)
 		}

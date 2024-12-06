@@ -52,8 +52,8 @@ func (eA ExtractorAction) Act(s *SharedData) error {
 		return err
 	}
 
-	extracted_dir := "extracted"
-	os.MkdirAll(extracted_dir, 0755)
+	extracted_dir := fmt.Sprintf("extracted_%s", s.ExportType)
+	removePreviousAndCreate(extracted_dir)
 
 	for _, file := range innerZip.File {
 		innerFile, _ := file.Open()
@@ -78,5 +78,25 @@ func (eA ExtractorAction) Act(s *SharedData) error {
 	}
 
 	fmt.Printf("extract completed %s\n", s.DownloadedFilePath)
+	return nil
+}
+
+func removePreviousAndCreate(path string) error {
+	info, err := os.Stat(path)
+	if err != nil {
+		return fmt.Errorf("failed to stat directory :%s", err)
+	}
+
+	if info.IsDir() {
+		if err := os.RemoveAll(path); err != nil {
+			return fmt.Errorf("failed to remove directory: %s", err)
+		}
+		fmt.Printf("removed directory :%s\n", path)
+	}
+
+	if err := os.MkdirAll(path, 0755); err != nil {
+		return fmt.Errorf("failed to create directory: %w", err)
+	}
+
 	return nil
 }
