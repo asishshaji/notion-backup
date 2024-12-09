@@ -58,15 +58,15 @@ func (sca StatusCheckerAction) Act(s *SharedData) error {
 	ticker := time.NewTicker(time.Second * 10) // TODO make it configurable
 	var pollCounter int
 	// create request
-	req, err := sca.createStatusRequest(s.TaskId)
-	if err != nil {
-		return err
-	}
 	for {
 		select {
 		case <-ticker.C:
 			pollCounter += 1
 			fmt.Printf("[%d] polling %s\n", pollCounter, s.TaskId)
+			req, err := sca.createStatusRequest(s.TaskId)
+			if err != nil {
+				return err
+			}
 
 			// send the http request
 			status, exportURL, err := sca.getTaskStatus(req)
