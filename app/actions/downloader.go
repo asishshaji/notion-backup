@@ -17,6 +17,7 @@ func (DownloaderAction) String() string {
 	return "DownloaderAction"
 }
 
+// create the http request for downloading
 func (dA DownloaderAction) createDownloadRequest(exportUrl string) (*http.Request, error) {
 	req, _ := http.NewRequest(http.MethodGet, exportUrl, nil)
 	req.Header.Add("content-type", "application/json")

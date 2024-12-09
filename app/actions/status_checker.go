@@ -21,6 +21,7 @@ func (StatusCheckerAction) String() string {
 	return "StatusCheckerAction"
 }
 
+// create http request for checking status
 func (sca StatusCheckerAction) createStatusRequest(taskId string) (*http.Request, error) {
 	taskIdsReq := struct {
 		TaskIds []string `json:"taskIds"`
@@ -57,12 +58,14 @@ func (sca StatusCheckerAction) Act(s *SharedData) error {
 	// poll the status of the task
 	ticker := time.NewTicker(time.Second * 10) // TODO make it configurable
 	var pollCounter int
-	// create request
+
 	for {
 		select {
 		case <-ticker.C:
 			pollCounter += 1
 			fmt.Printf("[%d] polling %s\n", pollCounter, s.TaskId)
+
+			// create request
 			req, err := sca.createStatusRequest(s.TaskId)
 			if err != nil {
 				return err
@@ -74,6 +77,10 @@ func (sca StatusCheckerAction) Act(s *SharedData) error {
 				return err
 			}
 			if status == "success" {
+				if exportURL == "" {
+					return fmt.Errorf("failed to get export url")
+				}
+
 				// your workspace is now available to download,
 				// move to the next action
 				s.ExportURL = exportURL
@@ -94,12 +101,14 @@ func (sca StatusCheckerAction) Act(s *SharedData) error {
 func (sca StatusCheckerAction) getTaskStatus(req *http.Request) (string, string, error) {
 	var status, exportURL string
 
+	// send the request
 	resp, err := sca.HttpClient.Do(req)
 	if err != nil {
 		return status, exportURL, err
 	}
 	defer resp.Close()
 
+	// parse the response
 	var getTasksDTO models.GetTasksDTO
 	if err := json.NewDecoder(resp).Decode(&getTasksDTO); err != nil {
 		return status, exportURL, err
