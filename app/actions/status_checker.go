@@ -1,8 +1,11 @@
 package actions
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"os"
 	"time"
 
 	"github.com/asishshaji/notion-backup/app/httpclient"
@@ -18,19 +21,55 @@ func (StatusCheckerAction) String() string {
 	return "StatusCheckerAction"
 }
 
-// Aftering enqueueing the task, the function should be triggered to check if zip
+func (sca StatusCheckerAction) createStatusRequest(taskId string) (*http.Request, error) {
+	taskIdsReq := struct {
+		TaskIds []string `json:"taskIds"`
+	}{
+		TaskIds: []string{taskId},
+	}
+
+	buf := new(bytes.Buffer)
+	if err := json.NewEncoder(buf).Encode(taskIdsReq); err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, constants.NOTION_API_GET_TASKS_URL, buf)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Add("content-type", "application/json")
+	req.AddCookie(&http.Cookie{
+		Name:  "token_v2",
+		Value: os.Getenv("NOTION_TOKEN"),
+	})
+	req.AddCookie(&http.Cookie{
+		Name:  "file_token",
+		Value: os.Getenv("NOTION_FILE_TOKEN"),
+	})
+
+	return req, nil
+}
+
+// After enqueueing the task, the function should be triggered to check if zip
 // is available for download. Function keeps polling notion api to check if the zip is ready.
 // This action sets the downloadUrl in sharedData for the DownloadAction to use
 func (sca StatusCheckerAction) Act(s *SharedData) error {
 	// poll the status of the task
-	ticker := time.NewTicker(time.Second * 20) // TODO make it configurable
+	ticker := time.NewTicker(time.Second * 10) // TODO make it configurable
 	var pollCounter int
+	// create request
+	req, err := sca.createStatusRequest(s.TaskId)
+	if err != nil {
+		return err
+	}
 	for {
 		select {
 		case <-ticker.C:
 			pollCounter += 1
 			fmt.Printf("[%d] polling %s\n", pollCounter, s.TaskId)
-			status, exportURL, err := sca.getTaskStatus(s.TaskId)
+
+			// send the http request
+			status, exportURL, err := sca.getTaskStatus(req)
 			if err != nil {
 				return err
 			}
@@ -52,26 +91,17 @@ func (sca StatusCheckerAction) Act(s *SharedData) error {
 	}
 }
 
-func (sca StatusCheckerAction) getTaskStatus(taskId string) (string, string, error) {
-	var getTasksDTO models.GetTasksDTO
+func (sca StatusCheckerAction) getTaskStatus(req *http.Request) (string, string, error) {
 	var status, exportURL string
-	taskIdsReq := struct {
-		TaskIds []string `json:"taskIds"`
-	}{
-		TaskIds: []string{taskId},
-	}
 
-	b, err := json.Marshal(taskIdsReq)
+	resp, err := sca.HttpClient.Do(req)
 	if err != nil {
 		return status, exportURL, err
 	}
+	defer resp.Close()
 
-	resp, err := sca.HttpClient.Post(constants.NOTION_API_GET_TASKS_URL, b)
-	if err != nil {
-		return status, exportURL, err
-	}
-
-	if err := json.Unmarshal(resp, &getTasksDTO); err != nil {
+	var getTasksDTO models.GetTasksDTO
+	if err := json.NewDecoder(resp).Decode(&getTasksDTO); err != nil {
 		return status, exportURL, err
 	}
 
