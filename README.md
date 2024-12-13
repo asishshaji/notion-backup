@@ -1,7 +1,7 @@
 # notion-backup
 Notion backup using go
 
-##` Description
+## Description
 
 This is a simple tool to keep backups of your notion workspace to a github repo. Inspired from [Notion Backup](https://github.com/darobin/notion-backup). It is designed to work as part of a github workflow.
 
