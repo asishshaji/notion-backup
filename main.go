@@ -51,5 +51,4 @@ func main() {
 
 	// wait till all the goroutines are done
 	wg.Wait()
-
 }
